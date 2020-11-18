@@ -18,30 +18,57 @@
 #include "glm/glm.hpp"
 using namespace std;
 using namespace glm;
+extern "C" {
+	typedef struct Vec2
+	{
+		float x;
+		float y;
+	};
 
-struct Box 
-{
-	vec3 pos;
-	vec2 size;
-	vector<string> tags;
-	double boxId;
-	vec4 color;
-	bool iFrame = false;
-};
+	typedef struct Vec3
+	{
+		float x;
+		float y;
+		float z;
+	};
 
-struct Collision 
-{
-	Box box1;
-	Box box2;
-};
 
-// This class is exported from the dll
+	typedef struct Vec4 {
+		float x;
+		float y;
+		float z;
+		float w;
+	};
 
-class HITBOXES_API CHitboxes {
+	typedef struct Box
+	{
+		Vec3 pos;
+		Vec2 size;
+		//vector<string> tags;
+		double boxId;
+		Vec4 color;
+		bool iFrame = false;
+
+	};
+
+	typedef struct Collision
+	{
+		Box box1;
+		Box box2;
+	};
+}
+
+
+
+class CHitboxes {
 public:
-	CHitboxes(void) {};
+	CHitboxes();
+	CHitboxes(CHitboxes& other) = delete;
+	void operator =(const CHitboxes&) = delete;
 
-	double CreateBox(vec3 pos,vec2 size);
+	static CHitboxes* GetInstance();
+	
+	double CreateBox(Vec3 pos, Vec2 size);
 	Box GetBox(double boxId);
 	bool TagBox(double boxId, string tag);
 	bool UpdateBox(double boxId,Box box);
@@ -50,6 +77,7 @@ public:
 	vector<Collision> Collide();
 	bool TagPairCompare(pair<string, string> pair1, pair<string, string> pair2);
 protected:
+	
 	map<double,Box> boxMap;
 	map<string, vector<Box>> tagList;
 	vector<pair<string, string>> collisionList;
@@ -58,6 +86,31 @@ protected:
 
 };
 
-extern HITBOXES_API int nHitboxes;
 
-HITBOXES_API int fnHitboxes(void);
+static CHitboxes* singleton;
+
+
+extern "C" {
+	//HITBOXES_API double CreateBox(float x, float y, float z, float height, float width)
+	//{
+	//	CHitboxes* sing = CHitboxes::GetInstance();
+	//	Vec3 pos;
+	//	pos.x = x;
+	//	pos.y = y;
+	//	pos.z = z;
+	//	Vec2 size;
+	//	size.x = width;
+	//	size.y = height;
+	//	return sing->CreateBox(pos, size);
+	//}
+	HITBOXES_API double CreateBox(Vec3 pos, Vec2 size)
+	{
+		CHitboxes* sing = CHitboxes::GetInstance();
+		return sing->CreateBox(pos, size);
+	}
+}
+
+int Add(int a, int b) 
+{
+	return a + b;
+}

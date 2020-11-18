@@ -6,15 +6,6 @@
 #include "Hitboxes.h"
 
 
-// This is an example of an exported variable
-HITBOXES_API int nHitboxes=0;
-
-// This is an example of an exported function.
-HITBOXES_API int fnHitboxes(void)
-{
-    return 0;
-}
-
 // This is the constructor of a class that has been exported.
 CHitboxes::CHitboxes()
 {
@@ -22,7 +13,16 @@ CHitboxes::CHitboxes()
 }
 
 
-double CHitboxes::CreateBox(vec3 pos, vec2 size) {
+CHitboxes* CHitboxes::GetInstance()
+{
+    if (singleton == nullptr){
+    singleton = new CHitboxes();
+    }
+    return singleton;
+}
+
+
+double CHitboxes::CreateBox(Vec3 pos, Vec2 size) {
     Box box;
     box.pos = pos;
     box.size = size;
