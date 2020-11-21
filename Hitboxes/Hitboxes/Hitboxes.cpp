@@ -22,22 +22,21 @@ CHitboxes* CHitboxes::GetInstance()
 }
 
 
-double CHitboxes::CreateBox(Vec3 pos, Vec2 size) {
-    Box box;
-    box.pos = pos;
-    box.size = size;
+int CHitboxes::CreateBox(Box box) {
+
     //this might cause a clash but should work initially
     //need a better option, maybe with a uuid 
-    normal_distribution<double> distribution(1.0, 100.0);
-    double boxId = distribution(generator);
+    uniform_int_distribution<int> distribution(1, 10000);
+    int boxId = distribution(generator);
     doubleBoxIt = boxMap.find(boxId);
     if(doubleBoxIt != boxMap.end())
-        double boxId = distribution(generator);
+        unsigned int boxId = distribution(generator);
+    box.boxId = boxId;
     boxMap.emplace(boxId, box);
     return boxId;
 }
 
-Box CHitboxes::GetBox(double boxId)
+Box CHitboxes::GetBox(int boxId)
 {
     doubleBoxIt = boxMap.find(boxId);
     if (doubleBoxIt != boxMap.end())
@@ -47,7 +46,7 @@ Box CHitboxes::GetBox(double boxId)
     return box;
 }
 
-bool CHitboxes::TagBox(double boxId, string tag)
+bool CHitboxes::TagBox(int boxId, string tag)
 {
     //find box
 
@@ -57,7 +56,7 @@ bool CHitboxes::TagBox(double boxId, string tag)
     return false;
 }
 
-bool CHitboxes::UpdateBox(double boxId, Box box)
+bool CHitboxes::UpdateBox(int boxId, Box box)
 {
     doubleBoxIt = boxMap.find(boxId);
     if (doubleBoxIt != boxMap.end())

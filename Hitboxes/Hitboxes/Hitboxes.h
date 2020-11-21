@@ -45,7 +45,7 @@ extern "C" {
 		Vec3 pos;
 		Vec2 size;
 		//vector<string> tags;
-		double boxId;
+		int boxId;
 		Vec4 color;
 		bool iFrame = false;
 
@@ -68,21 +68,21 @@ public:
 
 	static CHitboxes* GetInstance();
 	
-	double CreateBox(Vec3 pos, Vec2 size);
-	Box GetBox(double boxId);
-	bool TagBox(double boxId, string tag);
-	bool UpdateBox(double boxId,Box box);
+	int CreateBox(Box box);
+	Box GetBox(int boxId);
+	bool TagBox(int boxId, string tag);
+	bool UpdateBox(int boxId,Box box);
 
 	bool CollideTags(string tag1, string tag2);
 	vector<Collision> Collide();
 	bool TagPairCompare(pair<string, string> pair1, pair<string, string> pair2);
 protected:
 	
-	map<double,Box> boxMap;
+	map<int,Box> boxMap;
 	map<string, vector<Box>> tagList;
 	vector<pair<string, string>> collisionList;
 	default_random_engine generator;
-	map<double, Box>::iterator doubleBoxIt;
+	map<int, Box>::iterator doubleBoxIt;
 
 };
 
@@ -91,23 +91,17 @@ static CHitboxes* singleton;
 
 
 extern "C" {
-	//HITBOXES_API double CreateBox(float x, float y, float z, float height, float width)
-	//{
-	//	CHitboxes* sing = CHitboxes::GetInstance();
-	//	Vec3 pos;
-	//	pos.x = x;
-	//	pos.y = y;
-	//	pos.z = z;
-	//	Vec2 size;
-	//	size.x = width;
-	//	size.y = height;
-	//	return sing->CreateBox(pos, size);
-	//}
-	HITBOXES_API double CreateBox(Vec3 pos, Vec2 size)
+
+
+	HITBOXES_API int CreateBox(Box box)
 	{
-		CHitboxes* sing = CHitboxes::GetInstance();
-		return sing->CreateBox(pos, size);
+		return CHitboxes::GetInstance()->CreateBox(box);
 	}
+	HITBOXES_API Box GetBox(int boxId) 
+	{
+		return CHitboxes::GetInstance()->GetBox(boxId);
+	}
+
 }
 
 int Add(int a, int b) 
