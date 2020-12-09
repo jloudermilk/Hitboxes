@@ -20,9 +20,9 @@ public class NativeScript : MonoBehaviour
     };
     
 
-    [DllImport("Hitboxes", EntryPoint = "CreateBox")]
+    [DllImport("HitboxesLib", EntryPoint = "CreateBox")]
     public static extern int CreateBox(Box box);
-    [DllImport("Hitboxes", EntryPoint = "GetBox")]
+    [DllImport("HitboxesLib", EntryPoint = "GetBox")]
     public static extern Box GetBox(int boxId);
 
     List<Box> boxes = new List<Box>();
