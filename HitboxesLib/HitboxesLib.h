@@ -1,8 +1,15 @@
-
-
+﻿
+#if defined(_MSC_VER)
+//  Microsoft 
 #define DllExport __declspec(dllexport)
-// for macOS
-// #define DllExport __attribute__(( visibility("default") ))
+#elif defined(__GNUC__)
+//  GCC
+#define DllExport __attribute__((visibility("default")))
+#else
+//  do nothing? ¯\_(ツ)_/¯
+#define DllExport
+#pragma warning Unknown dynamic link import/export semantics.
+#endif
 
 
 #include <string>

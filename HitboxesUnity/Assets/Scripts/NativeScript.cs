@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 
 public class NativeScript : MonoBehaviour
@@ -18,21 +17,32 @@ public class NativeScript : MonoBehaviour
         public bool iFrame;
 
     };
-    
+#if UNITY_IOS
+    const string dll = "__Internal";
+#endif
+#if UNITY_EDITOR_WIN
+    const string dll = "HitboxesLib";
+#endif
+#if UNITY_EDITOR_OSX
+    const string dll = "__Internal";
+#endif
 
-    [DllImport("HitboxesLib", EntryPoint = "CreateBox")]
+
+    [DllImport(dll, EntryPoint = "CreateBox")]
     public static extern int CreateBox(Box box);
-    [DllImport("HitboxesLib", EntryPoint = "GetBox")]
+    [DllImport(dll, EntryPoint = "GetBox")]
     public static extern Box GetBox(int boxId);
 
     List<Box> boxes = new List<Box>();
     Mesh mesh;
-    public Material mat;
+    public Material inside;
+    public Material wire;
+    MaterialPropertyBlock block;
     Matrix4x4 matrix;
     // Start is called before the first frame update
     void Start()
     {
-
+        block = new MaterialPropertyBlock();
         SetupQuad();
         Box b1 = new Box();
         b1.pos = Vector3.down;
@@ -58,12 +68,13 @@ public class NativeScript : MonoBehaviour
         b1 = new Box();
         b1.pos = Vector3.right;
         b1.size = new Vector2(1, 1);
-        b1.color = new Vector4(1, 0, 0, .5f);
+        b1.color = new Vector4(0, 1, 1, .5f);
         b1.boxId = CreateBox(b1);
         boxes.Add(b1);
 
 
         matrix = Matrix4x4.identity;
+
     }
     void SetupQuad()
     {
@@ -121,9 +132,13 @@ public class NativeScript : MonoBehaviour
         matrix[1, 3] = box.pos.y;
         matrix[2, 3] = box.pos.z;
         // colors arnt working so next thing to fix
-        mat.color = box.color;
-
-        Graphics.DrawMesh(mesh, matrix, mat, 0);
+        
+        block.SetColor("_Color", box.color);
+        block.SetColor("_FrontColor", box.color);
+        Graphics.DrawMesh(mesh, matrix, inside, 0, null, 0, block);
+        block.SetColor("_FrontColor", box.color);
+        block.SetFloat("_RemoveDiag", 1f);
+        Graphics.DrawMesh(mesh, matrix, wire, 0, null, 0, block);
     }
 
     private void LateUpdate()

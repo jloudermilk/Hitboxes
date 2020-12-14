@@ -151,10 +151,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1311324885}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bb5919c2353435449590caff2b884c5, type: 3}
+  m_Script: {fileID: 11500000, guid: 6422796bda60f6d4ea9b5ab6f3e21c16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 2100000, guid: 70a8b74f202c8a8489468f58ae308741, type: 2}
+  inside: {fileID: 2100000, guid: 30222d61bf735134a88330faf7434a78, type: 2}
+  wire: {fileID: 2100000, guid: 2fe5cd75e45276e4590832c62ab8e4c4, type: 2}
 --- !u!81 &1311324887
 AudioListener:
   m_ObjectHideFlags: 0
