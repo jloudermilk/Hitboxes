@@ -43,6 +43,11 @@ Box CHitboxes::GetBox(int boxId)
 	return box;
 }
 
+map<int, Box> CHitboxes::GetBoxes()
+{
+	return boxMap;
+}
+
 bool CHitboxes::TagBox(int boxId, string tag)
 {
 	//find box

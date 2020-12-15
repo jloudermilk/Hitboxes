@@ -73,8 +73,9 @@ public:
 
 	int CreateBox(Box box);
 	Box GetBox(int boxId);
+	map<int, Box> GetBoxes();
 	bool TagBox(int boxId, string tag);
-	bool UpdateBox(int boxId, Box box);
+	bool UpdateBox(int boxId,Box box);
 
 	bool CollideTags(string tag1, string tag2);
 	vector<Collision> Collide();
@@ -103,6 +104,13 @@ extern "C" {
 	DllExport Box GetBox(int boxId)
 	{
 		return CHitboxes::GetInstance()->GetBox(boxId);
+	}
+	DllExport void UpdateBoxes(Box boxes[], int size)
+	{
+		for(int i = 0; i < size;i++)
+		{
+			CHitboxes::GetInstance()->UpdateBox(boxes[i].boxId,boxes[i]);
+		}
 	}
 
 }

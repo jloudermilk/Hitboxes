@@ -32,8 +32,12 @@ public class NativeScript : MonoBehaviour
     public static extern int CreateBox(Box box);
     [DllImport(dll, EntryPoint = "GetBox")]
     public static extern Box GetBox(int boxId);
+    [DllImport(dll, EntryPoint = "UpdateBoxes")]
+    public static extern void UpdateBoxes(Box[] boxes, int size);
 
-    List<Box> boxes = new List<Box>();
+
+    List<int> boxIds;
+    List<Box> updateList;
     Mesh mesh;
     public Material inside;
     public Material wire;
@@ -43,34 +47,34 @@ public class NativeScript : MonoBehaviour
     void Start()
     {
         block = new MaterialPropertyBlock();
+        boxIds = new List<int>();
+        updateList = new List<Box>();
         SetupQuad();
         Box b1 = new Box();
         b1.pos = Vector3.down;
         b1.size = new Vector2(1, 1);
         b1.color = new Vector4(1, 0, 0, .5f);
-        b1.boxId = CreateBox(b1);
-        boxes.Add(b1);
+        boxIds.Add(CreateBox(b1));
+
 
         b1 = new Box();
         b1.pos = Vector3.up;
         b1.size = new Vector2(1, 1);
         b1.color = new Vector4(0, 1, 0, .5f);
-        b1.boxId = CreateBox(b1);
-        boxes.Add(b1);
+        boxIds.Add(CreateBox(b1));
+
 
         b1 = new Box();
         b1.pos = Vector3.left;
         b1.size = new Vector2(1, 1);
         b1.color = new Vector4(0, 0, 1, .5f);
-        b1.boxId = CreateBox(b1);
-        boxes.Add(b1);
+        boxIds.Add(CreateBox(b1));
 
         b1 = new Box();
         b1.pos = Vector3.right;
         b1.size = new Vector2(1, 1);
         b1.color = new Vector4(0, 1, 1, .5f);
-        b1.boxId = CreateBox(b1);
-        boxes.Add(b1);
+        boxIds.Add(CreateBox(b1));
 
 
         matrix = Matrix4x4.identity;
@@ -113,13 +117,20 @@ public class NativeScript : MonoBehaviour
         };
         mesh.uv = uv;
     }
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
-        foreach (Box b in boxes)
+       Box test =  GetBox(boxIds[0]);
+       test.pos.x += .01f;
+        updateList.Add(test);
+        UpdateBoxes(updateList.ToArray(),updateList.Count);
+        updateList.Clear();
+    }
+    void LateUpdate()
+    {
+        
+        foreach (var k in boxIds)
         {
-            RenderBox(b);
+            RenderBox(GetBox(k));
         }
     }
 
@@ -141,10 +152,6 @@ public class NativeScript : MonoBehaviour
         Graphics.DrawMesh(mesh, matrix, wire, 0, null, 0, block);
     }
 
-    private void LateUpdate()
-    {
 
-
-    }
 
 }
